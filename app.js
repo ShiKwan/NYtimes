@@ -2,26 +2,28 @@ $(document).ready(function(){
 
 
 
-var searchTerm = $('#search-term');
 
-var numRecords = $('#numRecordsSelect');
+$("#executeRun").on("click",function() {
 
-var startDate = $('#start-year');
 
-var endDate = $('#end-year');
+var searchTerm = $('#search-term').val();
+
+var numRecords = $('#numRecordsSelect').val();
+
+var startDate = $('#start-year').val();
+
+var endDate = $('#end-year').val();
 
 var articleContainer = $('#resultsArea');
 
 startDate += "0101";
 endDate += "0101";
 
-$('#executeRun').click(function() {
+console.log(startDate);
+console.log(endDate);
+console.log(searchTerm);
 
-
-searchTerm = "bush";
-startDate = "20160101";
-endDate = "20170101";
-numRecords = 20;
+console.log("here");
 
 
 var url = "https://api.nytimes.com/svc/search/v2/articlesearch.json";
@@ -30,7 +32,7 @@ url += '?' + $.param({
   'q': searchTerm,
   'begin_date': startDate,
   'end_date': endDate,
-  'page': Math.Ceil(numRecords/10),
+  'page': Math.ceil(numRecords/10),
 
 });
 
@@ -42,8 +44,10 @@ $.ajax({
 .done(function(result) {
   console.log(result);
 
+  var value = result.response;
 
- for (var i = 0; i < result.length; i++) {
+  console.log(value);
+ for (var i = 0; i < value.docs.length; i++) {
  	var container = $('<div>');
  	var index = i+1;
  	var headLine = $('<h1>');
@@ -51,22 +55,23 @@ $.ajax({
  	var section = $('<h4>');
  	var date = $('<h4>');
  	var link = $('<span>');
+  console.log("in loop");
 
+ 	headLine.html(value.docs[i].headline.main);
+  console.log(headLine);
+ 	author.html(value.docs[i].byline.original);
+ 	section.html("Section: " + value.docs[i].section_name);
+ 	date.html(value.docs[i].pub_date);
+ 	link.html(value.docs[i].web_url);
 
- 	headLine = result.docs[i].headline.main;
- 	author = result.docs[i].byline.original;
- 	section = "Section: " + result[i].section_name;
- 	date = result.docs[i].pub_date;
- 	link = result.docs[i].web_url;
-
- 	coonsole.log(result[i]);
+ 	console.log(value.docs[i]);
 
  	container.append(index);
- 	conatiner.append(headLine);
+ 	container.append(headLine);
  	container.append(author);
  	container.append(section);
  	container.append(date);
- 	contianer.append(link);
+ 	container.append(link);
 
  	articleContainer.prepend(container);
 
@@ -84,7 +89,7 @@ $.ajax({
 
 
 $('#clearResults').click(function() {
-
+console.log("here clear");
 	$('#resultsArea').empty();
 	$('#search-term').empty();
 	$('#start-year').empty();
